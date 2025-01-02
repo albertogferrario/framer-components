@@ -2,9 +2,9 @@ import * as React from "react"
 import { Frame, addPropertyControls, ControlType } from "framer"
 
 /**
- * InfiniteHorizontalSlider
+ * PerpetualSlider
  * - Renders a horizontal slider that loops infinitely.
- * - Each image is 20% of the container’s width.
+ * - Each image is % based on maxVisibleItems and the container’s width.
  * @framerSupportedLayoutWidth any
  * @framerSupportedLayoutHeight any
  */
