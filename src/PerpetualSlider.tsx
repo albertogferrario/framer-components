@@ -107,7 +107,7 @@ export function PerpetualSlider(props) {
                     overflow: direction === "ltr" ? "hidden" : "scroll",
                     scrollbarWidth: "none", // Firefox
                     msOverflowStyle: "none", // IE 10+
-                    maskImage: `linear-gradient(to right, transparent, black ${clipping / 2}%, black ${100 - clipping / 2}%, transparent)`,
+                    maskImage: `linear-gradient(${direction === "ltr" ? "to right" : "to bottom"}, transparent, black ${clipping / 2}%, black ${100 - clipping / 2}%, transparent)`,
                 }}
             >
                 {allImages.map((imgSrc, index) => (
@@ -124,7 +124,10 @@ export function PerpetualSlider(props) {
                                 direction === "ltr"
                                     ? "100%"
                                     : `${(1 / maxVisibleItems) * 100}%`,
-                            padding: `0 ${gap / 2}px`,
+                            padding:
+                                direction === "ltr"
+                                    ? `0 ${gap / 2}px`
+                                    : `${gap / 2}px 0`,
                         }}
                     >
                         <img
@@ -209,3 +212,4 @@ addPropertyControls(PerpetualSlider, {
         defaultValue: "ltr",
     },
 })
+
