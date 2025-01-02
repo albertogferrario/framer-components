@@ -17,6 +17,7 @@ export function PerpetualSlider(props) {
         borderRadius,
         maxVisibleItems,
         clipping,
+        direction,
         ...rest
     } = props
     const containerRef = React.useRef(null)
@@ -32,9 +33,15 @@ export function PerpetualSlider(props) {
             // Wait for the layout to stabilize
             requestAnimationFrame(() => {
                 // Scroll to the middle chunk
-                const scrollWidth = containerRef.current.scrollWidth
-                const chunkWidth = scrollWidth / 3
-                containerRef.current.scrollLeft = chunkWidth
+                if (direction === "ltr") {
+                    const scrollWidth = containerRef.current.scrollWidth
+                    const chunkWidth = scrollWidth / 3
+                    containerRef.current.scrollLeft = chunkWidth
+                } else {
+                    const scrollWidth = containerRef.current.scrollTop
+                    const chunkWidth = scrollWidth / 3
+                    containerRef.current.scrolTop = chunkWidth
+                }
                 setIsReady(true)
             })
         }
@@ -44,24 +51,43 @@ export function PerpetualSlider(props) {
     // scrolls too far in either direction.
     const onScroll = React.useCallback(() => {
         if (!isReady || !containerRef.current) return
-        const scrollWidth = containerRef.current.scrollWidth
-        const chunkWidth = scrollWidth / 3
-        const currentScroll = containerRef.current.scrollLeft
+
+        let currentScroll = null
+        let chunkWidth = null
+
+        if (direction === "ltr") {
+            const scrollWidth = containerRef.current.scrollWidth
+            chunkWidth = scrollWidth / 3
+            currentScroll = containerRef.current.scrollLeft
+        } else {
+            const scrollWidth = containerRef.current.scrollHeight
+            chunkWidth = scrollWidth / 3
+            currentScroll = containerRef.current.scrollTop
+        }
 
         // If scroll is way to the left (before the middle chunk),
         // jump forward by one chunk:
         if (currentScroll < chunkWidth * 0.5) {
-            containerRef.current.scrollLeft += chunkWidth
+            if (direction === "ltr") {
+                containerRef.current.scrollLeft += chunkWidth
+            } else {
+                containerRef.current.scrollTop += chunkWidth
+            }
         }
         // If scroll is way to the right (past the middle chunk),
         // jump back by one chunk:
         else if (currentScroll > chunkWidth * 1.5) {
-            containerRef.current.scrollLeft -= chunkWidth
+            if (direction === "ltr") {
+                containerRef.current.scrollLeft -= chunkWidth
+            } else {
+                containerRef.current.scrollTop -= chunkWidth
+            }
         }
     }, [isReady])
 
     const onWheel = React.useCallback((event) => {
-        event.preventDefault()
+        if (direction === "ltr") return
+
         if (containerRef.current) {
             containerRef.current.scrollLeft += event.deltaY
         }
@@ -74,9 +100,11 @@ export function PerpetualSlider(props) {
                 onScroll={onScroll}
                 onWheel={onWheel}
                 style={{
+                    display: direction === "ltr" ? "block" : "flex",
+                    flexDirection: "column",
                     height: "100%",
                     whiteSpace: "nowrap",
-                    overflowX: "hidden",
+                    overflow: direction === "ltr" ? "hidden" : "scroll",
                     scrollbarWidth: "none", // Firefox
                     msOverflowStyle: "none", // IE 10+
                     maskImage: `linear-gradient(to right, transparent, black ${clipping / 2}%, black ${100 - clipping / 2}%, transparent)`,
@@ -88,8 +116,14 @@ export function PerpetualSlider(props) {
                         href={links[index % links.length]}
                         style={{
                             display: "inline-block",
-                            width: `${(1 / maxVisibleItems) * 100}%`,
-                            height: "100%",
+                            width:
+                                direction === "ltr"
+                                    ? `${(1 / maxVisibleItems) * 100}%`
+                                    : "100%",
+                            height:
+                                direction === "ltr"
+                                    ? "100%"
+                                    : `${(1 / maxVisibleItems) * 100}%`,
                             padding: `0 ${gap / 2}px`,
                         }}
                     >
@@ -167,5 +201,11 @@ addPropertyControls(PerpetualSlider, {
         step: 1,
         unit: "%",
     },
+    direction: {
+        title: "Direction",
+        type: ControlType.Enum,
+        options: ["ltr", "ttb"],
+        optionTitles: ["→", "↓"],
+        defaultValue: "ltr",
+    },
 })
-
