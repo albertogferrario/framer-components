@@ -86,7 +86,7 @@ export function PerpetualSlider(props) {
     }, [isReady])
 
     const onWheel = React.useCallback((event) => {
-        if (direction === "ltr") return
+        if (direction === "ttb") return
 
         if (containerRef.current) {
             containerRef.current.scrollLeft += event.deltaY
