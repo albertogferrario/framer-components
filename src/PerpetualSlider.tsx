@@ -25,7 +25,7 @@ export function PerpetualSlider(props) {
 
     // We replicate the list of images 3 times to create
     // a center "main" chunk and two extra chunks (one on each side).
-    const allImages = [...images, ...images, ...images]
+    const allImages = [...images, ...images, ...images, ...images]
 
     React.useEffect(() => {
         // Once the component mounts, scroll to the middle chunk
@@ -33,7 +33,7 @@ export function PerpetualSlider(props) {
             // Wait for the layout to stabilize
             requestAnimationFrame(() => {
                 // Scroll to the middle chunk
-                if (direction === "ltr") {
+                if (direction === "h") {
                     const scrollWidth = containerRef.current.scrollWidth
                     const chunkWidth = scrollWidth / 3
                     containerRef.current.scrollLeft = chunkWidth
@@ -55,38 +55,38 @@ export function PerpetualSlider(props) {
         let currentScroll = null
         let chunkWidth = null
 
-        if (direction === "ltr") {
+        if (direction === "h") {
             const scrollWidth = containerRef.current.scrollWidth
-            chunkWidth = scrollWidth / 3
+            chunkWidth = scrollWidth / 4
             currentScroll = containerRef.current.scrollLeft
         } else {
             const scrollWidth = containerRef.current.scrollHeight
-            chunkWidth = scrollWidth / 3
+            chunkWidth = scrollWidth / 4
             currentScroll = containerRef.current.scrollTop
         }
 
         // If scroll is way to the left (before the middle chunk),
         // jump forward by one chunk:
         if (currentScroll < chunkWidth * 0.5) {
-            if (direction === "ltr") {
-                containerRef.current.scrollLeft += chunkWidth
+            if (direction === "h") {
+                containerRef.current.scrollLeft += chunkWidth * 2
             } else {
-                containerRef.current.scrollTop += chunkWidth
+                containerRef.current.scrollTop += chunkWidth * 2
             }
         }
         // If scroll is way to the right (past the middle chunk),
         // jump back by one chunk:
-        else if (currentScroll > chunkWidth * 1.5) {
-            if (direction === "ltr") {
-                containerRef.current.scrollLeft -= chunkWidth
+        else if (currentScroll > chunkWidth * 2.5) {
+            if (direction === "h") {
+                containerRef.current.scrollLeft -= chunkWidth * 2
             } else {
-                containerRef.current.scrollTop -= chunkWidth
+                containerRef.current.scrollTop -= chunkWidth * 2
             }
         }
     }, [isReady])
 
     const onWheel = React.useCallback((event) => {
-        if (direction === "ttb") return
+        if (direction === "v") return
 
         if (containerRef.current) {
             containerRef.current.scrollLeft += event.deltaY
@@ -100,14 +100,14 @@ export function PerpetualSlider(props) {
                 onScroll={onScroll}
                 onWheel={onWheel}
                 style={{
-                    display: direction === "ltr" ? "block" : "flex",
+                    display: direction === "h" ? "block" : "flex",
                     flexDirection: "column",
                     height: "100%",
                     whiteSpace: "nowrap",
-                    overflow: direction === "ltr" ? "hidden" : "scroll",
+                    overflow: direction === "h" ? "hidden" : "scroll",
                     scrollbarWidth: "none", // Firefox
                     msOverflowStyle: "none", // IE 10+
-                    maskImage: `linear-gradient(${direction === "ltr" ? "to right" : "to bottom"}, transparent, black ${clipping / 2}%, black ${100 - clipping / 2}%, transparent)`,
+                    maskImage: `linear-gradient(${direction === "h" ? "to right" : "to bottom"}, transparent, black ${clipping / 2}%, black ${100 - clipping / 2}%, transparent)`,
                 }}
             >
                 {allImages.map((imgSrc, index) => (
@@ -117,15 +117,15 @@ export function PerpetualSlider(props) {
                         style={{
                             display: "inline-block",
                             width:
-                                direction === "ltr"
+                                direction === "h"
                                     ? `${(1 / maxVisibleItems) * 100}%`
                                     : "100%",
                             height:
-                                direction === "ltr"
+                                direction === "h"
                                     ? "100%"
                                     : `${(1 / maxVisibleItems) * 100}%`,
                             padding:
-                                direction === "ltr"
+                                direction === "h"
                                     ? `0 ${gap / 2}px`
                                     : `${gap / 2}px 0`,
                         }}
@@ -207,9 +207,9 @@ addPropertyControls(PerpetualSlider, {
     direction: {
         title: "Direction",
         type: ControlType.Enum,
-        options: ["ltr", "ttb"],
-        optionTitles: ["→", "↓"],
-        defaultValue: "ltr",
+        options: ["h", "v"],
+        optionTitles: ["Horizontal", "Vertical"],
+        defaultValue: "h",
     },
 })
 
