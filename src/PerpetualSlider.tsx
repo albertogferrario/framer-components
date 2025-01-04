@@ -10,8 +10,7 @@ import { Frame, addPropertyControls, ControlType } from "framer"
  */
 export function PerpetualSlider(props) {
     const {
-        images,
-        links,
+        items,
         padding,
         gap,
         borderRadius,
@@ -22,6 +21,9 @@ export function PerpetualSlider(props) {
     } = props
     const containerRef = React.useRef(null)
     const [isReady, setIsReady] = React.useState(false)
+
+    const images = items.map(({ image, _ }, index) => image)
+    const urls = items.map(({ _, link }, index) => link)
 
     // We replicate the list of images 3 times to create
     // a center "main" chunk and two extra chunks (one on each side).
@@ -113,7 +115,7 @@ export function PerpetualSlider(props) {
                 {allImages.map((imgSrc, index) => (
                     <a
                         key={index}
-                        href={links[index % links.length]}
+                        href={urls[index % urls.length]}
                         style={{
                             display: "inline-block",
                             width:
@@ -150,35 +152,33 @@ export function PerpetualSlider(props) {
 
 // Property controls for the component
 addPropertyControls(PerpetualSlider, {
-    images: {
-        title: "Images",
+    items: {
+        title: "Collection",
         type: ControlType.Array,
         propertyControl: {
-            type: ControlType.Image,
+            type: ControlType.Object,
+            controls: {
+                image: {
+                    type: ControlType.Image,
+                    title: "Image",
+                },
+                link: {
+                    type: ControlType.Link,
+                    title: "Link",
+                },
+            },
         },
-    },
-    links: {
-        title: "Links",
-        type: ControlType.Array,
-        propertyControl: {
-            type: ControlType.String,
-        },
+        defaultValue: [],
     },
     padding: {
         title: "Padding",
-        type: ControlType.Number,
-        defaultValue: 0,
-        min: 0,
-        step: 1,
-        unit: "px",
+        type: ControlType.Padding,
+        defaultValue: "0px",
     },
     borderRadius: {
         title: "Border Radius",
-        type: ControlType.Number,
-        defaultValue: 0,
-        min: 0,
-        step: 1,
-        unit: "px",
+        type: ControlType.BorderRadius,
+        defaultValue: "0px",
     },
     gap: {
         title: "Gap",
