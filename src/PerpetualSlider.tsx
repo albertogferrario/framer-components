@@ -49,6 +49,29 @@ export function PerpetualSlider(props) {
         }
     }, [images])
 
+    React.useEffect(() => {
+        function handleGlobalWheel(event) {
+            // Se vuoi che lo slider si muova SOLO se l’utente
+            // è effettivamente su questa pagina/componente,
+            // puoi eventualmente fare un controllo in più.
+            // Ad esempio controllando if (containerRef.current) ...
+            // In questo caso, lo slider si muoverà sempre.
+
+            // Sposta orizzontalmente lo slider
+            if (containerRef.current) {
+                containerRef.current.scrollLeft += event.deltaY
+            }
+        }
+
+        // Aggiungo l’event listener a livello di window
+        window.addEventListener("wheel", handleGlobalWheel, { passive: false })
+
+        return () => {
+            // Pulizia quando il componente si smonta
+            window.removeEventListener("wheel", handleGlobalWheel)
+        }
+    }, [])
+
     // Handle scroll event to "jump" back or forward if the user
     // scrolls too far in either direction.
     const onScroll = React.useCallback(() => {
