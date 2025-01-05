@@ -27,7 +27,7 @@ export function PerpetualSlider(props) {
 
     // We replicate the list of images 3 times to create
     // a center "main" chunk and two extra chunks (one on each side).
-    const allImages = [...images, ...images, ...images, ...images]
+    const allImages = [...images, ...images, ...images, ...images, ...images]
 
     React.useEffect(() => {
         // Once the component mounts, scroll to the middle chunk
@@ -37,11 +37,11 @@ export function PerpetualSlider(props) {
                 // Scroll to the middle chunk
                 if (direction === "h") {
                     const scrollWidth = containerRef.current.scrollWidth
-                    const chunkWidth = scrollWidth / 3
+                    const chunkWidth = scrollWidth / 5
                     containerRef.current.scrollLeft = chunkWidth
                 } else {
                     const scrollWidth = containerRef.current.scrollTop
-                    const chunkWidth = scrollWidth / 3
+                    const chunkWidth = scrollWidth / 5
                     containerRef.current.scrolTop = chunkWidth
                 }
                 setIsReady(true)
@@ -59,11 +59,11 @@ export function PerpetualSlider(props) {
 
         if (direction === "h") {
             const scrollWidth = containerRef.current.scrollWidth
-            chunkWidth = scrollWidth / 4
+            chunkWidth = scrollWidth / 5
             currentScroll = containerRef.current.scrollLeft
         } else {
             const scrollWidth = containerRef.current.scrollHeight
-            chunkWidth = scrollWidth / 4
+            chunkWidth = scrollWidth / 5
             currentScroll = containerRef.current.scrollTop
         }
 
@@ -71,18 +71,18 @@ export function PerpetualSlider(props) {
         // jump forward by one chunk:
         if (currentScroll < chunkWidth * 0.5) {
             if (direction === "h") {
-                containerRef.current.scrollLeft += chunkWidth * 2
+                containerRef.current.scrollLeft += chunkWidth * 3
             } else {
-                containerRef.current.scrollTop += chunkWidth * 2
+                containerRef.current.scrollTop += chunkWidth * 3
             }
         }
         // If scroll is way to the right (past the middle chunk),
         // jump back by one chunk:
-        else if (currentScroll > chunkWidth * 2.5) {
+        else if (currentScroll > chunkWidth * 3.5) {
             if (direction === "h") {
-                containerRef.current.scrollLeft -= chunkWidth * 2
+                containerRef.current.scrollLeft -= chunkWidth * 3
             } else {
-                containerRef.current.scrollTop -= chunkWidth * 2
+                containerRef.current.scrollTop -= chunkWidth * 3
             }
         }
     }, [isReady])
