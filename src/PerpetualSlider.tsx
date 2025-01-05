@@ -17,6 +17,7 @@ export function PerpetualSlider(props) {
         maxVisibleItems,
         clipping,
         direction,
+        globalScrollControl,
         ...rest
     } = props
     const containerRef = React.useRef(null)
@@ -50,6 +51,8 @@ export function PerpetualSlider(props) {
     }, [images])
 
     React.useEffect(() => {
+        if (!globalScrollControl) return
+
         function handleGlobalWheel(event) {
             // Se vuoi che lo slider si muova SOLO se l’utente
             // è effettivamente su questa pagina/componente,
@@ -233,6 +236,11 @@ addPropertyControls(PerpetualSlider, {
         options: ["h", "v"],
         optionTitles: ["Horizontal", "Vertical"],
         defaultValue: "h",
+    },
+    globalScrollControl: {
+        title: "Global Scroll Control",
+        type: ControlType.Boolean,
+        defaultValue: true,
     },
 })
 
